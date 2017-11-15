@@ -60,19 +60,6 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QPushButton" name="pbComIndex">
-   <property name="geometry">
-    <rect>
-     <x>213</x>
-     <y>9</y>
-     <width>80</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
   <widget class="Line" name="line_2">
    <property name="geometry">
     <rect>
@@ -254,6 +241,11 @@
         <string>921600</string>
        </property>
       </item>
+      <item>
+       <property name="text">
+        <string>custom</string>
+       </property>
+      </item>
      </widget>
     </item>
     <item>
@@ -300,11 +292,731 @@
     <attribute name="title">
      <string>wifi测试</string>
     </attribute>
+    <widget class="QComboBox" name="cbWFTestMode">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>TX continues</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>TX packet</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>RX packet</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>TX tone</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>测试模式：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>70</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>信号衰减(0.25dB)：</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leWFAtten">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbWFDataRate">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>40</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>11b 1M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11b 2M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11b 5.5M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11b 11M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 6M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 9M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 12M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 18M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 24M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 36M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 48M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 54M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS2</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS3</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS4</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS5</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS7</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>WiFi速率：</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbWFChannel">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>40</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>1/2412</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2/2417</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>3/2422</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>4/2427</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>5/2432</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>6/2437</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>7/2442</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>8/2447</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>9/2452</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>10/2457</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11/2462</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>12/2467</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>13/2472</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>14/2484</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>信道选择：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>信道带宽：</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbWFBandWidth">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>40</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>20M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>40M</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="pbWFStop">
+     <property name="geometry">
+      <rect>
+       <x>440</x>
+       <y>140</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>stop</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbWFSend">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>140</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>start</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
      <string>BT测试 </string>
     </attribute>
+    <widget class="QComboBox" name="cbBTTestMode">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>classBT TX</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>classBT RX/BR</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>classBT RX/EDR</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>BLE TX</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>BLE TX Syncw</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>BLE RX</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>BT TX tone</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="pbBTStop">
+     <property name="geometry">
+      <rect>
+       <x>440</x>
+       <y>140</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>stop</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbBTChannel">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>40</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>信道选择：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbBTPowerLevel">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>功耗等级(dB)：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_11">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>蓝牙测试模式：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_12">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>120</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>是否跳频：</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbBTChanJmp">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>140</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>No</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Yes</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="cbBTDataRate">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>90</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_13">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>70</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>调制方式：</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbBTPowerLevel">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>40</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>3</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>4</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>5</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>7</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>8</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="cbBTDataType">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>1010</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>00001111</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>prbs9</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_14">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>70</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Data类型：</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_15">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>70</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>DH类型：</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbBTDHType">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>90</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>DH1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>DH3</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>DH5</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_16">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>负载长度(0~255)：</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leBTPayload">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>40</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>70</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>包的身份识别：</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbBTSyncw">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>90</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>0x71764129</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>custom</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLineEdit" name="leSyncw">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>90</y>
+       <width>82</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbBTSend">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>140</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>start</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_3">
     <attribute name="title">
@@ -703,43 +1415,22 @@
        </rect>
       </property>
       <property name="text">
-       <string>发送</string>
+       <string>send</string>
       </property>
      </widget>
     </widget>
    </widget>
   </widget>
-  <widget class="QPushButton" name="pbComIndex_2">
+  <widget class="QLineEdit" name="leCOM">
    <property name="geometry">
     <rect>
-     <x>293</x>
-     <y>8</y>
-     <width>18</width>
-     <height>22</height>
+     <x>370</x>
+     <y>10</y>
+     <width>76</width>
+     <height>20</height>
     </rect>
    </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>image/combobox2.png</normaloff>image/combobox2.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>18</width>
-     <height>22</height>
-    </size>
-   </property>
   </widget>
-  <zorder>tbSerial</zorder>
-  <zorder>line</zorder>
-  <zorder>line_2</zorder>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>horizontalLayoutWidget</zorder>
-  <zorder>twTestPanel</zorder>
-  <zorder>pbComIndex_2</zorder>
-  <zorder>pbComIndex</zorder>
  </widget>
  <resources/>
  <connections/>

@@ -235,6 +235,41 @@ def t_loadBin(esprftool, params):
         #print "load flash ..." 
         write_flash(esp, params, esprftool)
 
+class WFParams(object):
+    WFTestMode = {'TX continues':'0', 'TX packet':'1', 'RX packet':'2', 'TX tone':'3'}
+    WFChannel = ()
+    WFBandWidth = {'20M':'0', '40M':'1'}
+    WFDataRate = {'11b 1M':'0x00', '11b 2M':'0x01', '11b 5.5M':'0x02', '11b 11M':'0x03', '11g 6M':'0x0b',
+                  '11g 9M':'0x0f', '11g 12M':'0x0a', '11g 18M':'0x0e', '11g 24M':'0x09', '11g 36M':'0x0d',
+                  '11g 48M':'0x08', '11g 54M':'0x0c', '11n MCS0':'0x10', '11n MCS1':'0x11','11n MCS2':'0x12',
+                  '11n MCS3':'0x13','11n MCS4':'0x14','11n MCS5':'0x15','11n MCS6':'0x16','11n MCS7':'0x17'}
+    WFAtten = 0
+
+class BTParams(object):
+    BTTestMode = {'classBT TX':'0', 'classBT RX/BR':'1', 'class BT/EDR':'2', 'BLE TX':'3', 
+                  'BLE TX Syncw':'4', 'BLE RX':'5', 'BT TX tone':'6'}
+    BTpowerLevel = (0, 1, 2, 3, 4, 5, 6, 7, 8)
+    BTChannel = ()
+    BLEChannel = ()
+    BTDataType = {'1010':'0', '00001111':'1', 'prbs9':'2'}
+    BTDataRate = {'1M':'1', '2M':'2', '3M':'3'}
+    BLEDataRate = ('LE')
+    BTDHType = {'DH1':'1', 'DH3':'3', 'DH5':'5'}
+    BTChanJmp = {'no':'0', 'yes':'1'}
+    BLEPayload = 0
+    BLESyncw = {'0x71764129':'0', 'custom':'1'}
+
+class CmdParams(WFParams, BTParams):
+    def __init(self):
+        pass
+
+class myComboBox(QtGui.QComboBox):
+    clicked = QtCore.pyqtSignal()
+    def mousePressEvent(self, event):
+        """ QComboBox.mousePressEvent(QMouseEvent) """
+        if event.button() == QtCore.Qt.LeftButton:
+            self.clicked.emit()
+    
 
 class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
     _SignalTX = QtCore.pyqtSignal(str)
@@ -243,13 +278,18 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
     _port_status = 0
     _checkBok_selected = 0
     rbSend_group = QtGui.QButtonGroup()
-    leSend_group = {}    
+    leSend_group = {}
+    cmdParams = CmdParams()
+    _WFStatus = 0 # use for WiFi tone
+    _BTstatus = 0 # use for BT tone
+    _ulap = 0x6bc6967e
+    _ltaddr = 0x0
     def __init__(self, EspRFtestTool, parent=None):
         super(QtGui.QWidget, self).__init__(parent=parent)
         self.setupUi(self)
         self.setupSignal(self)
         self.twTestPanel.setEnabled(False)
-        self.loadParams()
+        self.paramInit(self.cmdParams)
     
     def closeEvent(self, event):
         try:
@@ -263,12 +303,18 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
         
     def setupSignal(self, EspRFtestTool):
         QtCore.QObject.connect(self.pbOpenSerial, QtCore.SIGNAL(_fromUtf8("clicked()")), self._startRFTest)
-        QtCore.QObject.connect(self.pbComIndex, QtCore.SIGNAL(_fromUtf8("clicked()")), self.cbUpdate)
-        QtCore.QObject.connect(self.pbComIndex_2, QtCore.SIGNAL(_fromUtf8("clicked()")), self.cbUpdate)
+        QtCore.QObject.connect(self.cbComIndex, QtCore.SIGNAL(_fromUtf8("clicked()")), self.cbUpdate)
         QtCore.QObject.connect(self.pbLoadBin, QtCore.SIGNAL(_fromUtf8("clicked()")), self.loadBin)
-        QtCore.QObject.connect(self.cbComIndex, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.cbUpdate2)
         QtCore.QObject.connect(self.pbOpenFile, QtCore.SIGNAL(_fromUtf8("clicked()")), self.showFileDialog)
-        QtCore.QObject.connect(self.pbSend, QtCore.SIGNAL(_fromUtf8("clicked()")), self.cmdSend)
+        QtCore.QObject.connect(self.pbSend, QtCore.SIGNAL(_fromUtf8("clicked()")), self.manuCmdSend)
+        QtCore.QObject.connect(self.cbBTTestMode, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.btCmdUpdate)
+        QtCore.QObject.connect(self.cbWFTestMode, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.wfCmdUpdate)
+        QtCore.QObject.connect(self.cbBTSyncw, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.btSyncw)
+        QtCore.QObject.connect(self.cbComBaud, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.comBaud)
+        QtCore.QObject.connect(self.pbBTSend, QtCore.SIGNAL(_fromUtf8("clicked()")), self.btCmdSend)
+        QtCore.QObject.connect(self.pbWFSend, QtCore.SIGNAL(_fromUtf8("clicked()")), self.wfCmdSend)
+        QtCore.QObject.connect(self.pbBTStop, QtCore.SIGNAL(_fromUtf8("clicked()")), self.cmdStop)
+        QtCore.QObject.connect(self.pbWFStop, QtCore.SIGNAL(_fromUtf8("clicked()")), self.cmdStop)        
         self._SignalTX.connect(self.printLog)
         self._Signalprb.connect(self.prbUpdate)
         self._SignalStart.connect(self._startRFTest)
@@ -282,7 +328,186 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
             elif type(chd) == QtGui.QLineEdit:
                 self.leSend_group[int(chd.objectName()[6:])] = chd
     
-    def loadParams(self):
+    def paramInit(self, cmdParams):
+        self.loadSave()
+        self.twTestPanel.setEnabled(False)
+        self.twTestPanel.setCurrentIndex(0)
+        self.cbWFTestMode.setCurrentIndex(0)
+        self.cbBTTestMode.setCurrentIndex(0)
+        self.cbWFChannel.clear()
+        self.leSyncw.setHidden(True)
+        self.leCOM.setHidden(True)
+        for i in range(13):
+            self.cbWFChannel.addItem(str(i+1)+'/'+str(2412+i*5))
+        self.cbWFChannel.addItem('14/2484')
+        
+        self.wfCmdUpdate()
+        self.btCmdUpdate()
+        
+        self.cbWFBandWidth.setCurrentIndex(0)
+        self.cbWFChannel.setCurrentIndex(0)
+        self.cbWFDataRate.setCurrentIndex(0)
+        self.leWFAtten.setText('0')
+        
+        self.cbBTChannel.setCurrentIndex(0)
+        self.cbBTChanJmp.setCurrentIndex(0)
+        self.cbBTDataRate.setCurrentIndex(0)
+        self.cbBTDataType.setCurrentIndex(0)
+        self.cbBTDHType.setCurrentIndex(0)
+        self.cbBTPowerLevel.setCurrentIndex(4)
+        self.cbBTSyncw.setCurrentIndex(0)
+        self.leBTPayload.setText('0')
+        pass
+    
+    def wfCmdUpdate(self):
+        pass
+    
+    def btCmdUpdate(self):
+        if str(self.cbBTTestMode.currentText()).find('BT') >= 0:
+            self.cbBTChannel.clear()
+            for i in range(79):
+                self.cbBTChannel.addItem(str(i))
+            self.leBTPayload.setEnabled(False)
+            self.cbBTSyncw.setEnabled(False)
+            self.cbBTPowerLevel.addItem('9')
+            self.cbBTDataRate.setEnabled(True)
+            self.cbBTDHType.setEnabled(True)
+            self.cbBTDataRate.clear()
+            for dr in self.cmdParams.BTDataRate:
+                self.cbBTDataRate.addItem(dr)
+                
+        elif str(self.cbBTTestMode.currentText()).find('BLE') >= 0:
+            self.cbBTChannel.clear()
+            for i in range(40):
+                self.cbBTChannel.addItem(str(i))
+            self.leBTPayload.setEnabled(True)
+            self.cbBTSyncw.setEnabled(True)
+            self.cbBTPowerLevel.removeItem(9)
+            self.cbBTDataRate.setEnabled(False)
+            self.cbBTDHType.setEnabled(False)
+            self.cbBTDataRate.clear()
+            for dr in self.cmdParams.BLEDataRate:
+                self.cbBTDataRate.addItem(dr)            
+            
+    def btSyncw(self):
+        if str(self.cbBTSyncw.currentText()).find('custom') >= 0:
+            self.leSyncw.setHidden(False)
+        else:
+            self.leSyncw.setHidden(True)
+    
+    def comBaud(self):
+        if str(self.cbComBaud.currentText()).find('custom') >= 0:
+            self.leCOM.setHidden(False)
+        else:
+            self.leCOM.setHidden(True)
+    
+    def wfCmdSend(self):
+        cmd = ''        
+        channel = int(self.cbWFChannel.currentIndex()) + 1
+        rate = self.cmdParams.WFDataRate[str(self.cbWFDataRate.currentText())]
+        try:
+            attenuation = int(str(self.leWFAtten.text()))
+        except:
+            self.printLog('attenuation is error(type)')
+            return
+        if attenuation > 255 or attenuation < 0:
+            self.printLog('attenuation is error(value)')
+            return
+        
+        if str(self.cbWFBandWidth.currentText()).find('40M') >= 0:
+            self.cmdSend('tx_cbw40m_en 1\r')
+        else:
+            self.cmdSend('tx_cbw40m_en 0\r')
+        
+        if str(self.cbWFTestMode.currentText()).find('TX continues') >= 0:
+            self.cmdSend('tx_contin_en 1\r')
+            cmd = 'wifitxout ' + str(channel) + ' ' + rate + ' ' + str(attenuation)
+            self.cmdSend(cmd)
+        elif str(self.cbWFTestMode.currentText()).find('TX packet') >= 0:
+            self.cmdSend('tx_contin_en 0\r')
+            cmd = 'wifitxout ' + str(channel) + ' ' + rate + ' ' + str(attenuation)
+            self.cmdSend(cmd)
+        elif str(self.cbWFTestMode.currentText()).find('RX packet') >= 0:
+            cmd = 'esp_rx ' + str(channel) + ' ' + rate
+            self.cmdSend(cmd)
+        elif str(self.cbWFTestMode.currentText()).find('TX tone') >= 0:
+            cmd = 'wifiscwout 1 ' + str(channel) + ' ' + str(attenuation)
+            self.cmdSend(cmd)
+    
+    def btCmdSend(self):
+        cmd = ''
+        powerLevel = str(self.cbBTPowerLevel.currentText())
+        chanJump = str(self.cbBTChanJmp.currentIndex())
+        channel = self.cbBTChannel.currentIndex()
+        dataRate = self.cmdParams.BTDataRate[str(self.cbBTDataRate.currentText())]
+        dhType = self.cmdParams.BTDHType[str(self.cbBTDHType.currentText())]
+        dataType = str(self.cbBTDataType.currentText())
+        syncw = str(self.cbBTSyncw.currentText())
+        if syncw.find('custom') >= 0:
+            syncw = str(self.leSyncw.text())
+            
+        try:
+            payloadLength = int(str(self.leBTPayload.text()))
+        except:
+            self.printLog('payloadLength is error(type)')
+            return
+        if payloadLength > 255 or payloadLength < 0:
+            self.printLog('payloadLength is error(value)')
+            return
+        
+        if str(self.cbBTTestMode.currentText()).find('classBT TX') >= 0:
+            cmd = 'fcc_bt_tx '+powerLevel+' '+chanJump+' '+str(channel)+' '+dataRate+' '+dhType+' '+dataType+'\r'
+            self.cmdSend(cmd)
+        elif str(self.cbBTTestMode.currentText()).find('classBT RX/BR') >= 0:
+            if channel % 2 == 0:
+                channel = channel / 2
+            else:
+                channel = (channel-1)/2 + 40
+            cmd = 'rw_rx_per 0 '+str(channel)+' '+str(self._ulap)+' '+str(self._ltaddr)
+            self.cmdSend(cmd)
+        elif str(self.cbBTTestMode.currentText()).find('classBT RX/EDR') >= 0:
+            if channel % 2 == 0:
+                channel = channel / 2
+            else:
+                channel = (channel-1)/2 + 40
+            cmd = 'rw_rx_per 1 '+str(channel)+' '+str(self._ulap)+' '+str(self._ltaddr)
+            self.cmdSend(cmd)
+        elif str(self.cbBTTestMode.currentText()).find('BLE TX') >= 0:
+            cmd = 'fcc_le_tx '+powerLevel+' '+str(channel)+' '+str(payloadLength)+' '+dataType+'\r'
+            self.cmdSend(cmd)
+        elif str(self.cbBTTestMode.currentText()).find('BLE TX Syncw') >= 0:
+            cmd = 'fcc_le_tx '+powerLevel+' '+str(channel)+' '+str(payloadLength)+' '+dataType+' '+syncw+'\r'
+            self.cmdSend(cmd)
+        elif str(self.cbBTTestMode.currentText()).find('BLE RX') >= 0:
+            cmd = 'rw_le_rx_per '+str(channel)+' '+syncw
+            self.cmdSend(cmd)
+        elif str(self.cbBTTestMode.currentText()).find('BT TX tone') >= 0:
+            cmd = 'bt_tx_tone 1'+str(channel)+' '+syncw+' '+powerLevel
+            self.cmdSend(cmd)
+
+    def cmdStop(self):
+        if self.twTestPanel.currentIndex() == 0 and str(self.cbWFTestMode.currentText()).find('tone') >= 0:
+            channel = int(self.cbWFChannel.currentIndex()) + 1
+            try:
+                attenuation = int(str(self.leWFAtten.text()))
+            except:
+                self.printLog('attenuation is error(type)')
+                return
+            if attenuation > 255 or attenuation < 0:
+                self.printLog('attenuation is error(value)')
+                return
+            cmd = 'wifiscwout 0 ' + str(channel) + ' ' + str(attenuation)
+            self.cmdSend(cmd)
+            
+        elif self.twTestPanel.currentIndex() == 1 and str(self.cbBTTestMode.currentText()).find('tone') >= 0:
+            powerLevel = str(self.cbBTPowerLevel.currentText())
+            channel = self.cbBTChannel.currentIndex()
+            cmd = 'bt_tx_tone 0 '+str(channel)+' '+powerLevel
+            self.cmdSend(cmd)
+        else:
+            self.cmdSend('cmdstop\r')
+    
+    def loadSave(self):
         try:
             with open('default.conf', 'r') as fd:
                 for le in self.leSend_group:
@@ -304,11 +529,15 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
     def radiobtnChg(self, rbx):
         print(self.rbSend_group.checkedId(), 'has been selected')
     
-    def cmdSend(self):
-        send_data = self.leSend_group[self.rbSend_group.checkedId()].text()
-        send_data += '\r'
-        self.printLog(send_data)
-        self._ser.write(bytes(send_data))
+    def cmdSend(self, sendData):
+        if not sendData.endswith('\r'):
+            sendData += '\r'
+        self.printLog(sendData)
+        self._ser.write(bytes(sendData))        
+    
+    def manuCmdSend(self):
+        sendData = self.leSend_group[self.rbSend_group.checkedId()].text()
+        self.cmdSend(sendData)
     
     def loadBin(self):
         esp_params = esp_param()        
@@ -337,13 +566,17 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
             return
 
         com_port = str(self.cbComIndex.currentText())
-        baud_rate = int(self.cbComBaud.currentText())
         try:
+            if str(self.cbComBaud.currentText()).find('custom') >= 0:
+                baud_rate = int(self.leCOM.text())
+            else:
+                baud_rate = int(self.cbComBaud.currentText())
+
             self._ser = serial.Serial(port=com_port,
                                 baudrate=baud_rate,
                                 parity=serial.PARITY_NONE,stopbits=1,bytesize=8)
         except:
-            self.printLog('serial has been occupied')
+            self.printLog('open serial fail...')
             return
         
         self._port_status = 1
@@ -370,9 +603,6 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
             print port[0]
             self.cbComIndex.addItem(_fromUtf8(port[0]))
         self.cbComIndex.showPopup()
-        
-    def cbUpdate2(self):
-        self.pbComIndex.setText(self.cbComIndex.currentText())
         
     def printLog(self, log):
         self.tbSerial.append(log)
