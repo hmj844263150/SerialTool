@@ -113,7 +113,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>选择测试bin</string>
+         <string>open bin</string>
         </property>
        </widget>
       </item>
@@ -166,7 +166,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>加载测试bin</string>
+         <string>load bin</string>
         </property>
        </widget>
       </item>
@@ -318,7 +318,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>测试模式：</string>
+      <string>Test Mode:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_5">
@@ -326,12 +326,12 @@
       <rect>
        <x>20</x>
        <y>60</y>
-       <width>101</width>
+       <width>111</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>信号衰减(0.25dB)：</string>
+      <string>Attenuation(0.25dB)</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="leWFAtten">
@@ -467,7 +467,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>WiFi速率：</string>
+      <string>WiFi Rate:</string>
      </property>
     </widget>
     <widget class="QComboBox" name="cbWFChannel">
@@ -560,7 +560,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>信道选择：</string>
+      <string>Channel:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_8">
@@ -573,7 +573,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>信道带宽：</string>
+      <string>BandWidth:</string>
      </property>
     </widget>
     <widget class="QComboBox" name="cbWFBandWidth">
@@ -705,7 +705,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>信道选择：</string>
+      <string>Channel:</string>
      </property>
     </widget>
     <widget class="QLabel" name="lbBTPowerLevel">
@@ -718,7 +718,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>功耗等级(dB)：</string>
+      <string>Power Level(dB):</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_11">
@@ -731,7 +731,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>蓝牙测试模式：</string>
+      <string>Test Mode:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_12">
@@ -744,7 +744,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>是否跳频：</string>
+      <string>Hoppe:</string>
      </property>
     </widget>
     <widget class="QComboBox" name="cbBTChanJmp">
@@ -802,7 +802,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>调制方式：</string>
+      <string>Date Rate:</string>
      </property>
     </widget>
     <widget class="QComboBox" name="cbBTPowerLevel">
@@ -895,7 +895,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Data类型：</string>
+      <string>Data Type:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_15">
@@ -908,7 +908,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>DH类型：</string>
+      <string>DH Type:</string>
      </property>
     </widget>
     <widget class="QComboBox" name="cbBTDHType">
@@ -946,7 +946,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>负载长度(0~255)：</string>
+      <string>Payload length:</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="leBTPayload">
@@ -972,7 +972,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>包的身份识别：</string>
+      <string>Syncw:</string>
      </property>
     </widget>
     <widget class="QComboBox" name="cbBTSyncw">
@@ -1289,12 +1289,12 @@
     <rect>
      <x>470</x>
      <y>480</y>
-     <width>71</width>
+     <width>81</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>显示时间</string>
+    <string>Show Time</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pbLogSave">
@@ -1307,7 +1307,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>保存log</string>
+    <string>log Save</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pbLogClear">
@@ -1320,7 +1320,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>清除log</string>
+    <string>log Clear</string>
    </property>
   </widget>
   <widget class="QCheckBox" name="ckbShowSend">
@@ -1328,86 +1328,13 @@
     <rect>
      <x>470</x>
      <y>460</y>
-     <width>71</width>
+     <width>81</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>显示发送</string>
+    <string>Show Send</string>
    </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>4</x>
-     <y>0</y>
-     <width>48</width>
-     <height>39</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="text">
-    <string>芯片平台</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="cbChipType">
-   <property name="geometry">
-    <rect>
-     <x>58</x>
-     <y>9</y>
-     <width>95</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>ESP8266</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>ESP32</string>
-    </property>
-   </item>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>315</x>
-     <y>0</y>
-     <width>48</width>
-     <height>39</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="text">
-    <string> 波特率 </string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="cbComIndex">
-   <property name="geometry">
-    <rect>
-     <x>213</x>
-     <y>9</y>
-     <width>96</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>--</string>
-    </property>
-   </item>
   </widget>
   <widget class="QPushButton" name="pbOpenSerial">
    <property name="enabled">
@@ -1464,10 +1391,10 @@
     </size>
    </property>
   </widget>
-  <widget class="QLabel" name="label_3">
+  <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>159</x>
+     <x>315</x>
      <y>0</y>
      <width>48</width>
      <height>39</height>
@@ -1480,7 +1407,7 @@
     </sizepolicy>
    </property>
    <property name="text">
-    <string>串口选择</string>
+    <string>BaudRate</string>
    </property>
   </widget>
   <widget class="QComboBox" name="cbComBaud">
@@ -1518,6 +1445,59 @@
     </property>
    </item>
   </widget>
+  <widget class="QComboBox" name="cbComIndex">
+   <property name="geometry">
+    <rect>
+     <x>213</x>
+     <y>9</y>
+     <width>96</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>--</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>159</x>
+     <y>0</y>
+     <width>48</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>    COM</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>4</x>
+     <y>0</y>
+     <width>48</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>ChipType</string>
+   </property>
+  </widget>
   <widget class="QLineEdit" name="leCOM">
    <property name="geometry">
     <rect>
@@ -1527,6 +1507,26 @@
      <height>20</height>
     </rect>
    </property>
+  </widget>
+  <widget class="QComboBox" name="cbChipType">
+   <property name="geometry">
+    <rect>
+     <x>58</x>
+     <y>9</y>
+     <width>95</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>ESP8266</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>ESP32</string>
+    </property>
+   </item>
   </widget>
   <zorder>tbSerial</zorder>
   <zorder>line</zorder>
@@ -1538,14 +1538,13 @@
   <zorder>line_2</zorder>
   <zorder>ckbShowSend</zorder>
   <zorder>pbOpenSerial</zorder>
-  <zorder>label_2</zorder>
-  <zorder>cbChipType</zorder>
   <zorder>label</zorder>
-  <zorder>cbComIndex</zorder>
-  <zorder>pbOpenSerial</zorder>
-  <zorder>label_3</zorder>
   <zorder>cbComBaud</zorder>
+  <zorder>cbComIndex</zorder>
+  <zorder>label_3</zorder>
+  <zorder>label_2</zorder>
   <zorder>leCOM</zorder>
+  <zorder>cbChipType</zorder>
  </widget>
  <resources/>
  <connections/>

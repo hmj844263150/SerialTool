@@ -1,4 +1,4 @@
-import espRFToolUI
+import espRFToolUIEN
 from PyQt4 import QtCore, QtGui
 import threading
 import os
@@ -193,12 +193,15 @@ def write_flash(esp, args, esprftool):
 
 def t_loadBin(esprftool, params):
     initial_baud = 115200
+    esprftool._SignalTX.emit('sync...')
+    esprftool._SignalLoadStatus.emit(4)
     if(params.chip_type == 'ESP32'):
         try:
             esp = esptool.ESP32ROM(params.port, initial_baud)
         except:
             print "ERROR!! The com port is occupied!!\n"
             esprftool._SignalTX.emit('ERROR!! The com port is occupied!!')
+            return
                 
     elif(params.chip_type == 'ESP8266'):
         try:
@@ -206,34 +209,44 @@ def t_loadBin(esprftool, params):
         except:
             print "ERROR!! The com port is occupied!!\n"
             esprftool._SignalTX.emit('ERROR!! The com port is occupied!!')
-
+            return
+    
+    esprftool._SignalLoadStatus.emit(1)
     esp_mac = (00, 00, 00, 00, 00, 00)
     cus_mac = "00:00:00:00:00:00"
     print('%s: %s' % ("ESP_MAC", ':'.join(map(lambda x: '%02x' % x, esp_mac))))
-    
+    esprftool._SignalLoadStatus.emit(1)
     while True:
         try:
             esp.connect()
             break
         except:
             pass
-        
-    esprftool._SignalTX.emit('sync success')
-    esp_mac = esp.read_mac()
-    print 'esp_mac:%02x-%02x-%02x-%02x-%02x-%02x' %(esp_mac)
-    esprftool._SignalTX.emit('esp_mac:%02x-%02x-%02x-%02x-%02x-%02x' %(esp_mac))
+    try:
+        esprftool._SignalTX.emit('sync success')
+        esp_mac = esp.read_mac()
+        print 'esp_mac:%02x-%02x-%02x-%02x-%02x-%02x' %(esp_mac)
+        esprftool._SignalTX.emit('esp_mac:%02x-%02x-%02x-%02x-%02x-%02x' %(esp_mac))
+        esprftool._SignalLoadStatus.emit(2)
     
-    if(params.esp_download_mode == 1):        
-        #print "load ram ..."
-        if load_ram(esp, params, esprftool) == 1:
-            esprftool._SignalStart.emit()
-        
-    elif(params.esp_download_mode == 2):
-        if not params.no_stub:
-            esp = esp.run_stub()    
-        esp.change_baud(921600)        
-        #print "load flash ..." 
-        write_flash(esp, params, esprftool)
+        if(params.esp_download_mode == 1):        
+            #print "load ram ..."
+            if load_ram(esp, params, esprftool) == 1:
+                esprftool._SignalStart.emit()
+            
+        elif(params.esp_download_mode == 2):
+            if not params.no_stub:
+                esp = esp.run_stub()    
+            esp.change_baud(921600)        
+            #print "load flash ..." 
+            write_flash(esp, params, esprftool)
+    except:
+        esprftool._SignalLoadStatus.emit(4)
+        esprftool._SignalTX.emit('load bin fail')
+        return 
+    
+    esprftool._SignalLoadStatus.emit(3)
+    
 
 class WFParams(object):
     WFTestMode = {'TX continues':'0', 'TX packet':'1', 'RX packet':'2', 'TX tone':'3'}
@@ -253,7 +266,7 @@ class BTParams(object):
     BLEChannel = ()
     BTDataType = {'1010':'0', '00001111':'1', 'prbs9':'2'}
     BTDataRate = {'1M':'1', '2M':'2', '3M':'3'}
-    BLEDataRate = ('LE')
+    BLEDataRate = {'LE':'0'}
     BTDHType = {'DH1':'1', 'DH3':'3', 'DH5':'5'}
     BTChanJmp = {'no':'0', 'yes':'1'}
     BLEPayload = 0
@@ -271,10 +284,11 @@ class myComboBox(QtGui.QComboBox):
             self.clicked.emit()
     
 
-class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
+class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
     _SignalTX = QtCore.pyqtSignal(str)
     _Signalprb = QtCore.pyqtSignal(int)
     _SignalStart = QtCore.pyqtSignal()
+    _SignalLoadStatus = QtCore.pyqtSignal(int)  # 0:idle, 1:syncing..., 2:loading..., 3:success, 4:fail
     _port_status = 0
     _checkBok_selected = 0
     rbSend_group = QtGui.QButtonGroup()
@@ -284,12 +298,16 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
     _BTstatus = 0 # use for BT tone
     _ulap = 0x6bc6967e
     _ltaddr = 0x0
-    def __init__(self, EspRFtestTool, parent=None):
+    _timeFlag = False
+    _showSend = False
+    _TestType = 0 # 0:cmd hander with wifi, 1:use cmd hander with esp
+    def __init__(self, EspRFtestTool, configParams, parent=None):
         super(QtGui.QWidget, self).__init__(parent=parent)
         self.setupUi(self)
+        self.addMyUI(self)
         self.setupSignal(self)
         self.twTestPanel.setEnabled(False)
-        self.paramInit(self.cmdParams)
+        self.paramInit(configParams)
     
     def closeEvent(self, event):
         try:
@@ -300,6 +318,13 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
         self.saveParams()
         print 'bye bye'
         sys.exit(0)
+        
+    def addMyUI(self, EspRFtestTool):
+        self.cbComIndex = myComboBox(EspRFtestTool)
+        self.cbComIndex.setGeometry(QtCore.QRect(213, 9, 96, 20))
+        self.cbComIndex.setObjectName(_fromUtf8("cbComIndex"))
+        self.cbComIndex.addItem(_fromUtf8(""))
+        self.cbComIndex.setItemText(0, _translate("EspRFtestTool", "--", None))        
         
     def setupSignal(self, EspRFtestTool):
         QtCore.QObject.connect(self.pbOpenSerial, QtCore.SIGNAL(_fromUtf8("clicked()")), self._startRFTest)
@@ -314,10 +339,16 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
         QtCore.QObject.connect(self.pbBTSend, QtCore.SIGNAL(_fromUtf8("clicked()")), self.btCmdSend)
         QtCore.QObject.connect(self.pbWFSend, QtCore.SIGNAL(_fromUtf8("clicked()")), self.wfCmdSend)
         QtCore.QObject.connect(self.pbBTStop, QtCore.SIGNAL(_fromUtf8("clicked()")), self.cmdStop)
-        QtCore.QObject.connect(self.pbWFStop, QtCore.SIGNAL(_fromUtf8("clicked()")), self.cmdStop)        
+        QtCore.QObject.connect(self.pbWFStop, QtCore.SIGNAL(_fromUtf8("clicked()")), self.cmdStop)
+        QtCore.QObject.connect(self.cbChipType, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.chipChg)
+        QtCore.QObject.connect(self.pbLogClear, QtCore.SIGNAL(_fromUtf8("clicked()")), self.logClear)
+        QtCore.QObject.connect(self.pbLogSave, QtCore.SIGNAL(_fromUtf8("clicked()")), self.saveFileDialog)
+        QtCore.QObject.connect(self.ckbTimeFlag, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.showFlag)
+        QtCore.QObject.connect(self.ckbShowSend, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.showFlag)
         self._SignalTX.connect(self.printLog)
         self._Signalprb.connect(self.prbUpdate)
         self._SignalStart.connect(self._startRFTest)
+        self._SignalLoadStatus.connect(self.loadStatus)
         QtCore.QMetaObject.connectSlotsByName(EspRFtestTool)
         self.rbSend1.setChecked(True)
         
@@ -328,8 +359,44 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
             elif type(chd) == QtGui.QLineEdit:
                 self.leSend_group[int(chd.objectName()[6:])] = chd
     
-    def paramInit(self, cmdParams):
-        self.loadSave()
+    def chipChg(self):
+        if str(self.cbChipType.currentText()).find('8266') >= 0:
+            self.twTestPanel.setCurrentIndex(1)
+            self.twTestPanel.currentWidget().setEnabled(False)
+            self.twTestPanel.setCurrentIndex(0)
+        elif str(self.cbChipType.currentText()).find('32') >= 0:
+            self.twTestPanel.setCurrentIndex(1)
+            self.twTestPanel.currentWidget().setEnabled(True)
+            self.twTestPanel.setCurrentIndex(0)
+        self.wfCmdUpdate()
+        self.btCmdUpdate()
+    
+    def loadStatus(self, status):
+        self.leStatus.setAutoFillBackground(True)
+        p=self.leStatus.palette()
+        if status == 0:
+            self.leStatus.setText(' IDLE')
+        elif status == 1:
+            p.setColor(QtGui.QPalette.Base,QtGui.QColor(0, 0, 255))
+            p.setColor(QtGui.QPalette.Text,QtGui.QColor(255, 255, 0))
+            self.leStatus.setText('SYNC')
+        elif status == 2:
+            p.setColor(QtGui.QPalette.Base,QtGui.QColor(0, 255, 0))
+            p.setColor(QtGui.QPalette.Text,QtGui.QColor(255, 0, 255))
+            self.leStatus.setText('LOAD')
+        elif status == 3:
+            p.setColor(QtGui.QPalette.Base,QtGui.QColor(255, 255, 0))
+            p.setColor(QtGui.QPalette.Text,QtGui.QColor(0, 0, 255))
+            self.leStatus.setText('SUCC')
+        elif status == 4:
+            p.setColor(QtGui.QPalette.Base,QtGui.QColor(255, 0, 0))
+            p.setColor(QtGui.QPalette.Text,QtGui.QColor(0, 255, 255))
+            self.leStatus.setText(' FAIL')
+        self.leStatus.setPalette(p)
+    
+    def paramInit(self, configParams):
+        self._TestType = int(configParams['common_conf']['Test_Type'])
+        self.loadSave(configParams)
         self.twTestPanel.setEnabled(False)
         self.twTestPanel.setCurrentIndex(0)
         self.cbWFTestMode.setCurrentIndex(0)
@@ -337,6 +404,9 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
         self.cbWFChannel.clear()
         self.leSyncw.setHidden(True)
         self.leCOM.setHidden(True)
+        self.chipChg()
+        
+        self.twTestPanel.currentWidget
         for i in range(13):
             self.cbWFChannel.addItem(str(i+1)+'/'+str(2412+i*5))
         self.cbWFChannel.addItem('14/2484')
@@ -357,10 +427,12 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
         self.cbBTPowerLevel.setCurrentIndex(4)
         self.cbBTSyncw.setCurrentIndex(0)
         self.leBTPayload.setText('0')
-        pass
     
     def wfCmdUpdate(self):
-        pass
+        if str(self.cbChipType.currentText()).find('8266') >= 0:
+            self.cbWFBandWidth.removeItem(1)
+        else:
+            self.cbWFBandWidth.addItem('40M')
     
     def btCmdUpdate(self):
         if str(self.cbBTTestMode.currentText()).find('BT') >= 0:
@@ -372,9 +444,6 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
             self.cbBTPowerLevel.addItem('9')
             self.cbBTDataRate.setEnabled(True)
             self.cbBTDHType.setEnabled(True)
-            self.cbBTDataRate.clear()
-            for dr in self.cmdParams.BTDataRate:
-                self.cbBTDataRate.addItem(dr)
                 
         elif str(self.cbBTTestMode.currentText()).find('BLE') >= 0:
             self.cbBTChannel.clear()
@@ -384,10 +453,7 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
             self.cbBTSyncw.setEnabled(True)
             self.cbBTPowerLevel.removeItem(9)
             self.cbBTDataRate.setEnabled(False)
-            self.cbBTDHType.setEnabled(False)
-            self.cbBTDataRate.clear()
-            for dr in self.cmdParams.BLEDataRate:
-                self.cbBTDataRate.addItem(dr)            
+            self.cbBTDHType.setEnabled(False)         
             
     def btSyncw(self):
         if str(self.cbBTSyncw.currentText()).find('custom') >= 0:
@@ -401,7 +467,7 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
         else:
             self.leCOM.setHidden(True)
     
-    def wfCmdSend(self):
+    def wfCmdSend(self):            
         cmd = ''        
         channel = int(self.cbWFChannel.currentIndex()) + 1
         rate = self.cmdParams.WFDataRate[str(self.cbWFDataRate.currentText())]
@@ -422,17 +488,20 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
         if str(self.cbWFTestMode.currentText()).find('TX continues') >= 0:
             self.cmdSend('tx_contin_en 1\r')
             cmd = 'wifitxout ' + str(channel) + ' ' + rate + ' ' + str(attenuation)
-            self.cmdSend(cmd)
+            if self._TestType == 1:
+                cmd = 'esp_tx ' + str(channel) + ' ' + rate + ' ' + str(attenuation)
         elif str(self.cbWFTestMode.currentText()).find('TX packet') >= 0:
-            self.cmdSend('tx_contin_en 0\r')
             cmd = 'wifitxout ' + str(channel) + ' ' + rate + ' ' + str(attenuation)
-            self.cmdSend(cmd)
+            if self._TestType == 1:
+                cmd = 'esp_tx ' + str(channel) + ' ' + rate + ' ' + str(attenuation)            
         elif str(self.cbWFTestMode.currentText()).find('RX packet') >= 0:
             cmd = 'esp_rx ' + str(channel) + ' ' + rate
-            self.cmdSend(cmd)
         elif str(self.cbWFTestMode.currentText()).find('TX tone') >= 0:
             cmd = 'wifiscwout 1 ' + str(channel) + ' ' + str(attenuation)
-            self.cmdSend(cmd)
+        
+        if not cmd.endswith('\r'):
+            cmd = cmd+'\r'
+        self.cmdSend(cmd)
     
     def btCmdSend(self):
         cmd = ''
@@ -441,7 +510,7 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
         channel = self.cbBTChannel.currentIndex()
         dataRate = self.cmdParams.BTDataRate[str(self.cbBTDataRate.currentText())]
         dhType = self.cmdParams.BTDHType[str(self.cbBTDHType.currentText())]
-        dataType = str(self.cbBTDataType.currentText())
+        dataType = str(self.cbBTDataType.currentIndex())
         syncw = str(self.cbBTSyncw.currentText())
         if syncw.find('custom') >= 0:
             syncw = str(self.leSyncw.text())
@@ -457,33 +526,31 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
         
         if str(self.cbBTTestMode.currentText()).find('classBT TX') >= 0:
             cmd = 'fcc_bt_tx '+powerLevel+' '+chanJump+' '+str(channel)+' '+dataRate+' '+dhType+' '+dataType+'\r'
-            self.cmdSend(cmd)
         elif str(self.cbBTTestMode.currentText()).find('classBT RX/BR') >= 0:
             if channel % 2 == 0:
                 channel = channel / 2
             else:
                 channel = (channel-1)/2 + 40
             cmd = 'rw_rx_per 0 '+str(channel)+' '+str(self._ulap)+' '+str(self._ltaddr)
-            self.cmdSend(cmd)
         elif str(self.cbBTTestMode.currentText()).find('classBT RX/EDR') >= 0:
             if channel % 2 == 0:
                 channel = channel / 2
             else:
                 channel = (channel-1)/2 + 40
             cmd = 'rw_rx_per 1 '+str(channel)+' '+str(self._ulap)+' '+str(self._ltaddr)
-            self.cmdSend(cmd)
         elif str(self.cbBTTestMode.currentText()).find('BLE TX') >= 0:
             cmd = 'fcc_le_tx '+powerLevel+' '+str(channel)+' '+str(payloadLength)+' '+dataType+'\r'
-            self.cmdSend(cmd)
         elif str(self.cbBTTestMode.currentText()).find('BLE TX Syncw') >= 0:
             cmd = 'fcc_le_tx '+powerLevel+' '+str(channel)+' '+str(payloadLength)+' '+dataType+' '+syncw+'\r'
-            self.cmdSend(cmd)
         elif str(self.cbBTTestMode.currentText()).find('BLE RX') >= 0:
             cmd = 'rw_le_rx_per '+str(channel)+' '+syncw
-            self.cmdSend(cmd)
         elif str(self.cbBTTestMode.currentText()).find('BT TX tone') >= 0:
-            cmd = 'bt_tx_tone 1'+str(channel)+' '+syncw+' '+powerLevel
-            self.cmdSend(cmd)
+            cmd = 'bt_tx_tone 1 '+str(channel)+' '+powerLevel
+            
+        if not cmd.endswith('\r'):
+            cmd = cmd+'\r'
+        self.cmdSend(cmd)
+        
 
     def cmdStop(self):
         if self.twTestPanel.currentIndex() == 0 and str(self.cbWFTestMode.currentText()).find('tone') >= 0:
@@ -496,31 +563,33 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
             if attenuation > 255 or attenuation < 0:
                 self.printLog('attenuation is error(value)')
                 return
-            cmd = 'wifiscwout 0 ' + str(channel) + ' ' + str(attenuation)
+            cmd = 'wifiscwout 0 ' + str(channel) + ' ' + str(attenuation)+'\r'
             self.cmdSend(cmd)
             
         elif self.twTestPanel.currentIndex() == 1 and str(self.cbBTTestMode.currentText()).find('tone') >= 0:
             powerLevel = str(self.cbBTPowerLevel.currentText())
             channel = self.cbBTChannel.currentIndex()
-            cmd = 'bt_tx_tone 0 '+str(channel)+' '+powerLevel
+            cmd = 'bt_tx_tone 0 '+str(channel)+' '+powerLevel+'\r'
             self.cmdSend(cmd)
         else:
             self.cmdSend('cmdstop\r')
     
-    def loadSave(self):
-        try:
-            with open('default.conf', 'r') as fd:
-                for le in self.leSend_group:
-                    rl = fd.readline().strip('\n')
-                    rl = rl[rl.find(':')+1:]
-                    self.leSend_group[le].setText(rl)
-        except:
-            print 'not find config file'
+    def loadSave(self, configParams):
+        if configParams.has_key('manual_cmd'):
+            for le in self.leSend_group:
+                try:
+                    self.leSend_group[le].setText(configParams['manual_cmd'][str(le)])
+                except:
+                    pass
             
     def saveParams(self):
-        with open('default.conf', 'w') as fd:
+        with open('./config/settings.conf', 'w') as fd:
+            fd.write('\n[common_conf]\n')
+            fd.write('Test_Type = '+str(int(self._TestType)) + ' # 0:cmd hander with wifi, 1:use cmd hander with esp')
+            fd.write('\n[manual_cmd]\n')
             for le in self.leSend_group:
-                fd.write(str(le) + ':' + self.leSend_group[le].text() + '\n')
+                fd.write(str(le) + '=' + self.leSend_group[le].text() + '\n')            
+            
 
     ''' signal event handler '''
     def onClose(self):
@@ -530,13 +599,17 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
         print(self.rbSend_group.checkedId(), 'has been selected')
     
     def cmdSend(self, sendData):
+        if type(sendData) != type('s'):
+            print 'sendData type is not right'
+            return
         if not sendData.endswith('\r'):
             sendData += '\r'
-        self.printLog(sendData)
+        if self._showSend == True:
+            self.printLog('s:' + sendData)
         self._ser.write(bytes(sendData))        
     
     def manuCmdSend(self):
-        sendData = self.leSend_group[self.rbSend_group.checkedId()].text()
+        sendData = str(self.leSend_group[self.rbSend_group.checkedId()].text())
         self.cmdSend(sendData)
     
     def loadBin(self):
@@ -549,21 +622,38 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
             self.printLog('choose file not a bin file')
             return
         esp_params.addr_filename = {(0x0, open(esp_params.filename,'rb'))}
+        if str(self.cbLoadType.currentText()).find('RAM') >= 0:
+            esp_params.esp_download_mode = 1
+        elif str(self.cbLoadType.currentText()).find('Flash') >= 0:
+            esp_params.esp_download_mode = 2
             
         print "esp params:", esp_params.chip_type, esp_params.filename
         print esp_params.port
         
         t1 = threading.Thread(target=t_loadBin, args=[self, esp_params])
         t1.start()
+        self._ser.close()
         
     def _startRFTest(self):
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("image/button_open.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         if(self._port_status == 1):
-            self.pbOpenSerial.setText('Open COM')
+            #self.pbOpenSerial.setText('Open')
+            icon.addPixmap(QtGui.QPixmap(_fromUtf8("image/button_close.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.pbOpenSerial.setIcon(icon)
             self.printLog('COM is close')
             self._port_status = 0
             self._ser.close()
             self.twTestPanel.setEnabled(False)
             return
+        
+    
+        self.pbOpenSerial.setAutoFillBackground(True)
+        p=self.pbOpenSerial.palette()
+        p.setColor(QtGui.QPalette.Foreground,QtGui.QColor(0,123,255, 255))
+        p.setColor(QtGui.QPalette.ButtonText,QtGui.QColor(255,0,0, 255))
+        p.setBrush
+        self.pbOpenSerial.setPalette(p)        
 
         com_port = str(self.cbComIndex.currentText())
         try:
@@ -580,8 +670,8 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
             return
         
         self._port_status = 1
-        self.pbOpenSerial.setText('Close COM')
-        
+        #self.pbOpenSerial.setText('Close')
+        self.pbOpenSerial.setIcon(icon)
         self.printLog('start rf test')
         self.twTestPanel.setEnabled(True)
         t2 = threading.Thread(target=startRFTest, args=[self, self._ser])
@@ -590,6 +680,11 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
     def showFileDialog(self):
         filename = QtGui.QFileDialog.getOpenFileName(None, 'Open file', './')
         self.leFilePath.setText(filename)
+        
+    def saveFileDialog(self):
+        filename = QtGui.QFileDialog.getSaveFileName(None, 'Save file', './')
+        with open(filename, 'w') as fd:
+            fd.write(str(self.tbSerial.toPlainText()))
     
     def prbUpdate(self, persent):
         self.prbLoad.setValue(persent)
@@ -603,14 +698,74 @@ class Ui_EspRFTool(espRFToolUI.Ui_EspRFtestTool, QtGui.QWidget):
             print port[0]
             self.cbComIndex.addItem(_fromUtf8(port[0]))
         self.cbComIndex.showPopup()
-        
+                
     def printLog(self, log):
+        log=str(log)
+        if log.lower().find('esp_mac:') >= 0:
+            mac = int(log[log.find('esp_mac:')+8:].replace('-', ''), 16)
+            bt_mac = mac + 2
+            self.teChipInfo.setText("STA Mac:\n"+hex(mac).strip('L').strip('0x').upper())
+            if str(self.cbChipType.currentText()).find('32') >= 0:
+                self.teChipInfo.append("BT Mac:\n"+hex(mac+2).strip('L').strip('0x').upper())
+                
+        if self._timeFlag == True:
+            log = time.strftime('%y-%m-%d %H:%M:%S',time.localtime(time.time())) + '.' + str(int((time.time()*100)%100)) + ':' + log
         self.tbSerial.append(log)
-               
+        
+            
+    def showFlag(self):
+        if self.ckbTimeFlag.isChecked()==True:
+            self._timeFlag=True  
+        else:
+            self._timeFlag=False
+            
+        if self.ckbShowSend.isChecked() == True:
+            self._showSend=True
+        else:
+            self._showSend=False
+    
+    def logClear(self):
+        self.tbSerial.clear()
+        
+        
+def settingLoad(path):
+    with open(path, "r") as fd:
+        params = {}
+        line = fd.readline()
+        while line != '':
+            if line.find('#'): line=line[:line.find('#')]
+            if line.startswith('[') and line.find(']')>0:
+                cmd_type = line[line.find('[')+1:line.find(']')]
+                params[cmd_type] = {}
+                line = fd.readline()
+                while line != '':
+                    if line.startswith('['): break
+                    if line.find('#'): line=line[:line.find('#')]
+                    line = line.strip('\n').strip(' ')
+                    if len(line) > 0:
+                        params[cmd_type][line.split('=')[0].strip(' ')] = line.split('=')[1].strip(' ')
+                    line = fd.readline()
+            else:
+                line = fd.readline()
+                
+            
+    return params
 
-if __name__ == "__main__":
+
+def main():
+    params = {"common_conf":{"Test_Type":'0'}}
+    try:
+        params = settingLoad('./config/settings.conf')
+    except:
+        print 'not find config file use default settings'
+        
     app = QtGui.QApplication(sys.argv)
     EspRFTool = QtGui.QWidget()
-    ui = Ui_EspRFTool(EspRFTool)
+    ui = Ui_EspRFTool(EspRFTool, params)
     ui.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec_())    
+    pass
+
+if __name__ == "__main__":
+    main()
+    
