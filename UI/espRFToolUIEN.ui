@@ -1,0 +1,1654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>EspRFtestTool</class>
+ <widget class="QWidget" name="EspRFtestTool">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>570</width>
+    <height>570</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>570</width>
+    <height>570</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>570</width>
+    <height>570</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>EspRFtestTool</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>image/esplogo.png</normaloff>image/esplogo.png</iconset>
+  </property>
+  <widget class="QTextBrowser" name="tbSerial">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>320</y>
+     <width>441</width>
+     <height>241</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>200</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>-3</x>
+     <y>30</y>
+     <width>611</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="Line" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>100</y>
+     <width>911</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>40</y>
+     <width>571</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_11">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>5</number>
+    </property>
+    <property name="rightMargin">
+     <number>5</number>
+    </property>
+    <item>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>6</number>
+      </property>
+      <item row="0" column="11">
+       <widget class="QComboBox" name="cbLoadType">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>RAM</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Flash</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="1" rowspan="2">
+       <widget class="QLineEdit" name="leStatus">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>60</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>60</width>
+          <height>50</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <family>Bauhaus 93</family>
+          <pointsize>16</pointsize>
+         </font>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string notr="true"> IDLE</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="11">
+       <widget class="QPushButton" name="pbLoadBin">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>load bin</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLineEdit" name="leFilePath">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4" rowspan="2">
+       <widget class="QTextEdit" name="teChipInfo">
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>50</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QLabel" name="label_20">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="10">
+       <widget class="QLabel" name="label_24">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6" colspan="4">
+       <widget class="QProgressBar" name="prbLoad">
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="8">
+       <widget class="QPushButton" name="pbOpenFile">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>20</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QTabWidget" name="twTestPanel">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>120</y>
+     <width>551</width>
+     <height>191</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>1</number>
+   </property>
+   <widget class="QWidget" name="tabWF">
+    <attribute name="title">
+     <string>wifi Test</string>
+    </attribute>
+    <widget class="QComboBox" name="cbWFTestMode">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>TX continues</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>TX packet</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>RX packet</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>TX tone</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Test Mode:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>60</y>
+       <width>111</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Attenuation(0.25dB)</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leWFAtten">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="maxLength">
+      <number>10</number>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbWFDataRate">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>30</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>11b 1M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11b 2M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11b 5.5M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11b 11M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 6M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 9M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 12M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 18M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 24M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 36M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 48M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11g 54M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS2</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS3</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS4</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS5</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11n MCS7</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>10</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>WiFi Rate:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbWFChannel">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>30</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>1/2412</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2/2417</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>3/2422</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>4/2427</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>5/2432</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>6/2437</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>7/2442</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>8/2447</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>9/2452</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>10/2457</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>11/2462</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>12/2467</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>13/2472</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>14/2484</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>10</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Channel:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>10</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>BandWidth:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbWFBandWidth">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>30</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>20M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>40M</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="pbWFStop">
+     <property name="geometry">
+      <rect>
+       <x>440</x>
+       <y>130</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>stop</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbWFSend">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>130</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>start</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tabBT">
+    <attribute name="title">
+     <string>BT Test</string>
+    </attribute>
+    <widget class="QComboBox" name="cbBTTestMode">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>BT TX</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>BT RX</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>BLE TX</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>BLE RX</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>BT TX tone</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="pbBTStop">
+     <property name="geometry">
+      <rect>
+       <x>440</x>
+       <y>130</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>stop</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbBTChannel">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>30</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>10</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Channel:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="lbBTPowerLevel">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>10</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Power Level(dB):</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_11">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Test Mode:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_12">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>10</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Hoppe:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbBTChanJmp">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>30</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>No</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Yes</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="cbBTDataRate">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>80</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>1M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2M</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>3M</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_13">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>60</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Date Rate:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbBTPowerLevel">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>30</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>2</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>3</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>4</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>5</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>6</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>7</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>8</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="cbBTDataType">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>1010</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>00001111</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>prbs9</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_14">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>60</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Data Type:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_15">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>60</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>DH Type:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbBTDHType">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>80</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>DH1</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>DH3</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>DH5</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_16">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>110</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Payload length:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="leBTPayload">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>130</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>250</string>
+     </property>
+     <property name="maxLength">
+      <number>10</number>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>60</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Syncw:</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="cbBTSyncw">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>80</y>
+       <width>101</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>0x0</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>0x71764129</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>custom</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLineEdit" name="leSyncw">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>80</y>
+       <width>82</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="maxLength">
+      <number>100</number>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbBTSend">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>130</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>start</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tabManul">
+    <attribute name="title">
+     <string>Manual</string>
+    </attribute>
+    <widget class="QGroupBox" name="gbSend">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>531</width>
+       <height>181</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string notr="true"/>
+     </property>
+     <widget class="QRadioButton" name="rbSend1">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="rbSend2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="rbSend3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="rbSend4">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>100</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="rbSend5">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>130</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="rbSend6">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>10</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="rbSend7">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>40</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="rbSend8">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>70</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSend1">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>10</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maxLength">
+       <number>200</number>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSend2">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>40</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maxLength">
+       <number>200</number>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSend3">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>70</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maxLength">
+       <number>200</number>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSend4">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>100</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maxLength">
+       <number>200</number>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSend7">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>40</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maxLength">
+       <number>200</number>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSend8">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>70</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maxLength">
+       <number>200</number>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSend6">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>10</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maxLength">
+       <number>200</number>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSend5">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>130</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maxLength">
+       <number>200</number>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="rbSend9">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>100</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSend9">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>100</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maxLength">
+       <number>200</number>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leSend10">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>130</y>
+        <width>171</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="maxLength">
+       <number>200</number>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="rbSend10">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>130</y>
+        <width>16</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pbSend">
+      <property name="geometry">
+       <rect>
+        <x>437</x>
+        <y>126</y>
+        <width>81</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>send</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="ckbCycleFlag">
+      <property name="geometry">
+       <rect>
+        <x>434</x>
+        <y>69</y>
+        <width>99</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Cycle Send</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="leCycleInter">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>437</x>
+        <y>94</y>
+        <width>71</width>
+        <height>27</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>1000</string>
+      </property>
+      <property name="maxLength">
+       <number>10</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_18">
+      <property name="geometry">
+       <rect>
+        <x>507</x>
+        <y>99</y>
+        <width>41</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>ms</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QCheckBox" name="ckbTimeFlag">
+   <property name="geometry">
+    <rect>
+     <x>456</x>
+     <y>480</y>
+     <width>101</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Show Time</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pbLogSave">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>540</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>log Save</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pbLogClear">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>510</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>log Clear</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="ckbShowSend">
+   <property name="geometry">
+    <rect>
+     <x>456</x>
+     <y>460</y>
+     <width>101</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Show Send</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pbOpenSerial">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>8</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>75</width>
+     <height>23</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>75</width>
+     <height>23</height>
+    </size>
+   </property>
+   <property name="font">
+    <font>
+     <family>Agency FB</family>
+     <pointsize>10</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>image/button_close.png</normaloff>image/button_close.png</iconset>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>75</width>
+     <height>25</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>315</x>
+     <y>0</y>
+     <width>71</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>BaudRate</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="cbComBaud">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>9</y>
+     <width>95</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>9600</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>74880</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>115200</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>921600</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>custom</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QComboBox" name="cbComIndex">
+   <property name="geometry">
+    <rect>
+     <x>208</x>
+     <y>9</y>
+     <width>101</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>--</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>0</y>
+     <width>41</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>COM</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>4</x>
+     <y>0</y>
+     <width>71</width>
+     <height>39</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>ChipType</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="leCOM">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>9</y>
+     <width>76</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="maxLength">
+    <number>10</number>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="cbChipType">
+   <property name="geometry">
+    <rect>
+     <x>72</x>
+     <y>9</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>ESP8266</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>ESP32</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QCheckBox" name="ckbAddCR">
+   <property name="geometry">
+    <rect>
+     <x>456</x>
+     <y>436</y>
+     <width>99</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Add '\r'</string>
+   </property>
+  </widget>
+  <zorder>tbSerial</zorder>
+  <zorder>line</zorder>
+  <zorder>verticalLayoutWidget</zorder>
+  <zorder>twTestPanel</zorder>
+  <zorder>ckbTimeFlag</zorder>
+  <zorder>pbLogSave</zorder>
+  <zorder>pbLogClear</zorder>
+  <zorder>line_2</zorder>
+  <zorder>ckbShowSend</zorder>
+  <zorder>pbOpenSerial</zorder>
+  <zorder>label</zorder>
+  <zorder>cbComBaud</zorder>
+  <zorder>cbComIndex</zorder>
+  <zorder>label_3</zorder>
+  <zorder>label_2</zorder>
+  <zorder>leCOM</zorder>
+  <zorder>cbChipType</zorder>
+  <zorder>ckbAddCR</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

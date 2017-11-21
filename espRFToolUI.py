@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'UI_EspRFTool.ui'
+# Form implementation generated from reading ui file 'espRFToolUI.ui'
 #
-# Created: Fri Nov 17 11:05:28 2017
-#      by: PyQt4 UI code generator 4.11.3
+# Created by: PyQt4 UI code generator 4.12
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -59,8 +58,8 @@ class Ui_EspRFtestTool(object):
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 40, 551, 71))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout_11 = QtGui.QVBoxLayout(self.verticalLayoutWidget)
+        self.verticalLayout_11.setContentsMargins(5, 0, 5, 0)
         self.verticalLayout_11.setSpacing(0)
-        self.verticalLayout_11.setContentsMargins(5, -1, 5, -1)
         self.verticalLayout_11.setObjectName(_fromUtf8("verticalLayout_11"))
         self.gridLayout_4 = QtGui.QGridLayout()
         self.gridLayout_4.setContentsMargins(0, -1, -1, -1)
@@ -432,6 +431,10 @@ class Ui_EspRFtestTool(object):
         sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
         self.label.setSizePolicy(sizePolicy)
         self.label.setObjectName(_fromUtf8("label"))
+        self.cbComIndex = QtGui.QComboBox(EspRFtestTool)
+        self.cbComIndex.setGeometry(QtCore.QRect(213, 9, 96, 20))
+        self.cbComIndex.setObjectName(_fromUtf8("cbComIndex"))
+        self.cbComIndex.addItem(_fromUtf8(""))
         self.pbOpenSerial = QtGui.QPushButton(EspRFtestTool)
         self.pbOpenSerial.setEnabled(True)
         self.pbOpenSerial.setGeometry(QtCore.QRect(470, 8, 75, 23))
@@ -474,6 +477,24 @@ class Ui_EspRFtestTool(object):
         self.leCOM = QtGui.QLineEdit(EspRFtestTool)
         self.leCOM.setGeometry(QtCore.QRect(369, 9, 76, 20))
         self.leCOM.setObjectName(_fromUtf8("leCOM"))
+        self.tbSerial.raise_()
+        self.line.raise_()
+        self.verticalLayoutWidget.raise_()
+        self.twTestPanel.raise_()
+        self.ckbTimeFlag.raise_()
+        self.pbLogSave.raise_()
+        self.pbLogClear.raise_()
+        self.line_2.raise_()
+        self.ckbShowSend.raise_()
+        self.pbOpenSerial.raise_()
+        self.label_2.raise_()
+        self.cbChipType.raise_()
+        self.label.raise_()
+        self.cbComIndex.raise_()
+        self.pbOpenSerial.raise_()
+        self.label_3.raise_()
+        self.cbComBaud.raise_()
+        self.leCOM.raise_()
 
         self.retranslateUi(EspRFtestTool)
         self.twTestPanel.setCurrentIndex(0)
@@ -586,6 +607,7 @@ class Ui_EspRFtestTool(object):
         self.cbChipType.setItemText(0, _translate("EspRFtestTool", "ESP8266", None))
         self.cbChipType.setItemText(1, _translate("EspRFtestTool", "ESP32", None))
         self.label.setText(_translate("EspRFtestTool", " 波特率 ", None))
+        self.cbComIndex.setItemText(0, _translate("EspRFtestTool", "--", None))
         self.label_3.setText(_translate("EspRFtestTool", "串口选择", None))
         self.cbComBaud.setItemText(0, _translate("EspRFtestTool", "9600", None))
         self.cbComBaud.setItemText(1, _translate("EspRFtestTool", "74880", None))
