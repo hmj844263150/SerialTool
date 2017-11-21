@@ -267,21 +267,17 @@ class BTParams(object):
     BTpowerLevel = (0, 1, 2, 3, 4, 5, 6, 7, 8)
     BTChannel = ()
     BLEChannel = ()
-    BTDataType = {'1010':'0', '00001111':'1', 'prbs9':'2'}
-    BTDataRate = {'1M':'1', '2M':'2', '3M':'3'}
-    BLEDataRate = {'LE':'0'}
-    BTDHType = {'DH1':'1', 'DH3':'3', 'DH5':'5'}
     BTDataRateType={'1M_DH1_1010':'1 1 0', '1M_DH1_00001111':'1 1 1', '1M_DH1_prbs9':'1 1 2', '1M_DH3_1010':'1 3 0', 
                     '1M_DH3_00001111':'1 3 1', '1M_DH3_prbs9':'1 3 2', '1M_DH5_1010':'1 5 0','1M_DH5_00001111':'1 5 1', 
                     '1M_DH5_prbs9':'1 5 2', '2M_DH1_1010':'2 1 0', '2M_DH1_00001111':'2 1 1', '2M_DH1_prbs9':'2 1 2', 
                     '2M_DH3_1010':'2 3 0', '2M_DH3_00001111':'2 3 1', '2M_DH3_prbs9':'2 3 2', '2M_DH5_1010':'2 5 0', 
                     '2M_DH5_00001111':'2 5 1', '2M_DH5_prbs9':'2 5 2', '3M_DH1_1010':'3 1 0', '3M_DH1_00001111':'3 1 1', 
                     '3M_DH1_prbs9':'3 1 2', '3M_DH3_1010':'3 3 0', '3M_DH3_00001111':'3 3 1', '3M_DH3_prbs9':'3 3 2', 
-                    '3M_DH5_1010':'3 5 0', '3M_DH5_00001111':'3 5 1', '3M_DH5_prbs9':'3 5 2', }
-    BLEDatarateType={'LE_1010':'0', 'LE_00001111':'1', 'LE_prbs9':'2'}
+                    '3M_DH5_1010':'3 5 0', '3M_DH5_00001111':'3 5 1', '3M_DH5_prbs9':'3 5 2'}
+    BLEDataRateType={'LE_1010':'0', 'LE_00001111':'1', 'LE_prbs9':'2'}
     BTChanJmp = {'no':'0', 'yes':'1'}
     BLEPayload = 0
-    BLESyncw = {'0x71764129':'0', 'custom':'1'}
+    BLESyncw = {'0x0':'0', '0x71764129':'1', 'custom':'2'}
 
 class CmdParams(WFParams, BTParams):
     def __init(self):
@@ -447,8 +443,6 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
         self.cbBTChannel.setCurrentIndex(0)
         self.cbBTChanJmp.setCurrentIndex(0)
         self.cbBTDataRate.setCurrentIndex(0)
-        self.cbBTDataType.setCurrentIndex(0)
-        self.cbBTDHType.setCurrentIndex(0)
         self.cbBTPowerLevel.setCurrentIndex(4)
         self.cbBTSyncw.setCurrentIndex(0)
         self.leBTPayload.setText('250')
@@ -461,6 +455,18 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
         else:
             if self.cbWFBandWidth.count() < 2:
                 self.cbWFBandWidth.addItem('40M')
+
+        if str(self.cbChipType.currentText()).find('RX') >= 0:
+            self.leWFAtten.setEnabled(False)
+        else:
+            self.leWFAtten.setEnabled(True)
+
+        if str(self.cbWFTestMode.currentText()).find('tone') >= 0:
+            self.cbWFBandWidth.setEnabled(False)
+            self.cbWFDataRate.setEnabled(False)
+        else:
+            self.cbWFBandWidth.setEnabled(True)
+            self.cbWFDataRate.setEnabled(True)
 
         
     def wfBWUpdate(self):
@@ -483,8 +489,17 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             self.cbBTPowerLevel.clear()
             for i in range(10):
                 self.cbBTPowerLevel.addItem(str(i))
-            self.cbBTDataRate.setEnabled(True)
-            self.cbBTDHType.setEnabled(True)
+
+            if str(self.cbBTTestMode.currentText()).find('RX') >= 0:
+                if self.cbBTDataRate.count() != 6:
+                    self.cbBTDataRate.clear()
+                    for it in sorted(self.cmdParams.BTDataRateType.items(), key=lambda item:item[1]):
+                        if it[0].find('prbs9') >= 0 and it[0].find('DH5') < 0:
+                            self.cbBTDataRate.addItem(it[0])
+            elif self.cbBTDataRate.count() != 27:
+                self.cbBTDataRate.clear()
+                for it in sorted(self.cmdParams.BTDataRateType.items(), key=lambda item:item[1]):
+                    self.cbBTDataRate.addItem(it[0])
                 
         elif str(self.cbBTTestMode.currentText()).find('BLE') >= 0:
             self.cbBTChannel.clear()
@@ -500,17 +515,20 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             self.cbBTPowerLevel.clear()
             for i in range(9):
                 self.cbBTPowerLevel.addItem(str(i))
-            self.cbBTDataRate.setEnabled(False)
-            self.cbBTDHType.setEnabled(False)
 
-        if str(self.cbBTTestMode.currentText()).find('RX') >= 0 and self.cbBTDataType.count()>1:
-            self.cbBTDHType.removeItem(2)
-            self.cbBTDataType.removeItem(0)
-            self.cbBTDataType.removeItem(0)
-        elif str(self.cbBTTestMode.currentText()).find('RX')<0 and self.cbBTDataType.count()<=1:
-            self.cbBTDHType.addItem('DH5')
-            self.cbBTDataType.insertItem(0,'00001111')
-            self.cbBTDataType.insertItem(0,'1010')
+            if str(self.cbBTTestMode.currentText()).find('RX') >= 0:
+                if self.cbBTDataRate.count() != 1:
+                    self.cbBTDataRate.clear()
+                    self.cbBTDataRate.addItem('LE_prbs9')
+            elif self.cbBTDataRate.count() != 3:
+                self.cbBTDataRate.clear()
+                for it in sorted(self.cmdParams.BLEDataRateType.items(), key=lambda item:item[1]):
+                    self.cbBTDataRate.addItem(it[0])
+
+        if str(self.cbBTTestMode.currentText()).find('tone') >= 0:
+            self.lbBTPowerLevel.setText('Backoff:')
+        else:
+            self.lbBTPowerLevel.setText('Power Level:')
 
             
     def btSyncw(self):
@@ -566,9 +584,11 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
         powerLevel = str(self.cbBTPowerLevel.currentText())
         chanJump = str(self.cbBTChanJmp.currentIndex())
         channel = self.cbBTChannel.currentIndex()
-        dataRate = self.cmdParams.BTDataRate[str(self.cbBTDataRate.currentText())]
-        dhType = self.cmdParams.BTDHType[str(self.cbBTDHType.currentText())]
-        dataType = str(self.cbBTDataType.currentIndex())
+        dataRateType = ''
+        if str(self.cbBTTestMode.currentText()).find('BT') >= 0:
+            dataRateType = self.cmdParams.BTDataRateType[str(self.cbBTDataRate.currentText())]
+        else:
+            dataRateType = self.cmdParams.BLEDataRateType[str(self.cbBTDataRate.currentText())]
         syncw = str(self.cbBTSyncw.currentText())
         if syncw.find('custom') >= 0:
             syncw = str(self.leSyncw.text())
@@ -583,23 +603,23 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             return
         
         if str(self.cbBTTestMode.currentText()).find('BT TX') >= 0:
-            cmd = 'fcc_bt_tx '+powerLevel+' '+chanJump+' '+str(channel)+' '+dataRate+' '+dhType+' '+dataType+'\r'
-        elif str(self.cbBTTestMode.currentText()).find('BT RX') >= 0 and self.cbBTDataRate.currentIndex() <= 0:
+            cmd = 'fcc_bt_tx '+powerLevel+' '+chanJump+' '+str(channel)+' '+dataRateType+'\r'
+        elif str(self.cbBTTestMode.currentText()).find('BT RX') >= 0 and self.cbBTDataRate.currentIndex() <= 1:
             if channel % 2 == 0:
                 channel = channel / 2
             else:
                 channel = (channel-1)/2 + 40
             cmd = 'rw_rx_per 0 '+str(channel)+' '+hex(self._ulap)+' '+str(self._ltaddr)
-        elif str(self.cbBTTestMode.currentText()).find('BT RX') >= 0 and self.cbBTDataRate.currentIndex() > 0:
+        elif str(self.cbBTTestMode.currentText()).find('BT RX') >= 0 and self.cbBTDataRate.currentIndex() > 1:
             if channel % 2 == 0:
                 channel = channel / 2
             else:
                 channel = (channel-1)/2 + 40
             cmd = 'rw_rx_per 1 '+str(channel)+' '+hex(self._ulap)+' '+str(self._ltaddr)
         elif str(self.cbBTTestMode.currentText()).find('BLE TX') >= 0 and syncw=='0x0':
-            cmd = 'fcc_le_tx '+powerLevel+' '+str(channel)+' '+str(payloadLength)+' '+dataType+'\r'
+            cmd = 'fcc_le_tx '+powerLevel+' '+str(channel)+' '+str(payloadLength)+' '+dataRateType+'\r'
         elif str(self.cbBTTestMode.currentText()).find('BLE TX') >= 0 and syncw!='0x0':
-            cmd = 'fcc_le_tx '+powerLevel+' '+str(channel)+' '+str(payloadLength)+' '+dataType+' '+syncw+'\r'
+            cmd = 'fcc_le_tx '+powerLevel+' '+str(channel)+' '+str(payloadLength)+' '+dataRateType+' '+syncw+'\r'
         elif str(self.cbBTTestMode.currentText()).find('BLE RX') >= 0:
             cmd = 'rw_le_rx_per '+str(channel)+' '+syncw
         elif str(self.cbBTTestMode.currentText()).find('BT TX tone') >= 0:

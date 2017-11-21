@@ -710,12 +710,12 @@
       <rect>
        <x>150</x>
        <y>10</y>
-       <width>101</width>
+       <width>111</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Power Level(dB):</string>
+      <string>Power Level:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_11">
@@ -767,9 +767,9 @@
     <widget class="QComboBox" name="cbBTDataRate">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>20</x>
        <y>80</y>
-       <width>101</width>
+       <width>161</width>
        <height>22</height>
       </rect>
      </property>
@@ -792,7 +792,7 @@
     <widget class="QLabel" name="label_13">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>20</x>
        <y>60</y>
        <width>101</width>
        <height>16</height>
@@ -857,87 +857,11 @@
       </property>
      </item>
     </widget>
-    <widget class="QComboBox" name="cbBTDataType">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>80</y>
-       <width>101</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>1010</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>00001111</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>prbs9</string>
-      </property>
-     </item>
-    </widget>
-    <widget class="QLabel" name="label_14">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>60</y>
-       <width>101</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Data Type:</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_15">
-     <property name="geometry">
-      <rect>
-       <x>280</x>
-       <y>60</y>
-       <width>101</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>DH Type:</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="cbBTDHType">
-     <property name="geometry">
-      <rect>
-       <x>280</x>
-       <y>80</y>
-       <width>101</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>DH1</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>DH3</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>DH5</string>
-      </property>
-     </item>
-    </widget>
     <widget class="QLabel" name="label_16">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>110</y>
+       <x>410</x>
+       <y>60</y>
        <width>101</width>
        <height>16</height>
       </rect>
@@ -949,8 +873,8 @@
     <widget class="QLineEdit" name="leBTPayload">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>130</y>
+       <x>410</x>
+       <y>80</y>
        <width>101</width>
        <height>20</height>
       </rect>
@@ -965,7 +889,7 @@
     <widget class="QLabel" name="label_17">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>280</x>
        <y>60</y>
        <width>101</width>
        <height>16</height>
@@ -978,7 +902,7 @@
     <widget class="QComboBox" name="cbBTSyncw">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>280</x>
        <y>80</y>
        <width>101</width>
        <height>22</height>
@@ -1003,7 +927,7 @@
     <widget class="QLineEdit" name="leSyncw">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>280</x>
        <y>80</y>
        <width>82</width>
        <height>22</height>
