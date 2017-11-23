@@ -29,7 +29,7 @@ except AttributeError:
     
 class write_flash_param(object):
     flash_freq = '40m'  #para_dict['FLASH_FREQ']
-    flash_mode = 'qio'  #para_dict['FLASH_MODE']
+    flash_mode = 'dio'  #para_dict['FLASH_MODE']
     flash_size = '4MB'  #para_dict['FLASH_SIZE']
     addr_filename = ''  #{(0x0, self.filename)}
     filename = ''
@@ -124,9 +124,6 @@ def write_flash(esp, args, esprftool):
         argfile.seek(0)
 
     for address, argfile in args.addr_filename:
-        if esp.CHIP_NAME == "ESP32":
-            address = 0x1000
-
         if args.no_stub:
             print('Erasing flash...')
             esprftool._SignalTX.emit('Erasing flash...')
@@ -198,6 +195,7 @@ def t_loadBin(esprftool, params):
     initial_baud = 115200
     esprftool._SignalTX.emit('sync...')
     esprftool._SignalLoadStatus.emit(4)
+    esprftool._Signalprb.emit(0)    
     if(params.chip_type == 'ESP32'):
         try:
             esp = esptool.ESP32ROM(params.port, initial_baud)
@@ -234,8 +232,7 @@ def t_loadBin(esprftool, params):
     
         if(params.esp_download_mode == 1):        
             #print "load ram ..."
-            if load_ram(esp, params, esprftool) == 1:
-                esprftool._SignalStart.emit()
+            load_ram(esp, params, esprftool)
             
         elif(params.esp_download_mode == 2):
             if not params.no_stub:
@@ -305,7 +302,7 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
     _WFStatus = 0 # use for WiFi tone
     _BTstatus = 0 # use for BT tone
     _ulap = 0x6bc6967e
-    _ltaddr = 0x0
+    _Itaddr = 0x0
     _timeFlag = False
     _showSend = True
     _addCRFlag = False
@@ -350,6 +347,9 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
         QtCore.QObject.connect(self.cbBTSyncw, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.btSyncw)
         QtCore.QObject.connect(self.cbComBaud, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.comBaud)
         QtCore.QObject.connect(self.cbWFDataRate, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.wfCmdUpdate)
+        QtCore.QObject.connect(self.cbWFBandWidth, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.wfBWUpdate)
+        QtCore.QObject.connect(self.cbBTItaddr, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.btItaddrUpdate)
+        QtCore.QObject.connect(self.cbBTUlap, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.btUlapUpdate)
         QtCore.QObject.connect(self.cbWFBandWidth, QtCore.SIGNAL(_fromUtf8("currentIndexChanged(int)")), self.wfBWUpdate)
         QtCore.QObject.connect(self.pbBTSend, QtCore.SIGNAL(_fromUtf8("clicked()")), self.btCmdSend)
         QtCore.QObject.connect(self.pbWFSend, QtCore.SIGNAL(_fromUtf8("clicked()")), self.wfCmdSend)
@@ -447,6 +447,8 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
         self.cbBTSyncw.setCurrentIndex(0)
         self.leBTPayload.setText('250')
         self.leBTPayload.setEnabled(False)
+        self.leItaddr.setHidden(True)
+        self.leUlap.setHidden(True)
 
     
     def wfCmdUpdate(self):
@@ -456,7 +458,7 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             if self.cbWFBandWidth.count() < 2:
                 self.cbWFBandWidth.addItem('40M')
 
-        if str(self.cbChipType.currentText()).find('RX') >= 0:
+        if str(self.cbWFTestMode.currentText()).find('RX') >= 0:
             self.leWFAtten.setEnabled(False)
         else:
             self.leWFAtten.setEnabled(True)
@@ -468,40 +470,66 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             self.cbWFBandWidth.setEnabled(True)
             self.cbWFDataRate.setEnabled(True)
 
-        
+    def btUlapUpdate(self):
+        if str(self.cbBTUlap.currentText()).find('custom') >= 0:
+            self.leUlap.setHidden(False)
+        else:
+            self.leUlap.setHidden(True)
+    
+    def btItaddrUpdate(self):
+        if str(self.cbBTItaddr.currentText()).find('custom') >= 0:
+            self.leItaddr.setHidden(False)
+        else:
+            self.leItaddr.setHidden(True)        
+    
     def wfBWUpdate(self):
         self.cbWFChannel.clear()
         if str(self.cbWFBandWidth.currentText()).find('40M') >= 0:
-            for i in range(7):
-                self.cbWFChannel.addItem(str(i+3)+'/'+str(2412+(i+3)*5))
+            for i in range(9):
+                self.cbWFChannel.addItem(str(i+3)+'/'+str(2407+(i+3)*5))
         else:
             for i in range(13):
                 self.cbWFChannel.addItem(str(i+1)+'/'+str(2412+i*5))
             self.cbWFChannel.addItem('14/2484')
     
     def btCmdUpdate(self):
+        self.leItaddr.setEnabled(False)
+        self.leUlap.setEnabled(False)
+        self.cbBTPowerLevel.setEnabled(True)
+        self.cbBTChanJmp.setEnabled(True)
+        self.lbBTPowerLevel.setText('Power Level:')
+        self.cbBTDataRate.setEnabled(True)
+        self.cbBTItaddr.setEnabled(False)
+        self.cbBTUlap.setEnabled(False)                    
         if str(self.cbBTTestMode.currentText()).find('BT') >= 0:
             self.cbBTChannel.clear()
             for i in range(79):
                 self.cbBTChannel.addItem(str(i)+'/'+str(2402+i))
             self.leBTPayload.setEnabled(False)
             self.cbBTSyncw.setEnabled(False)
+            self.leSyncw.setEnabled(False)
             self.cbBTPowerLevel.clear()
             for i in range(10):
                 self.cbBTPowerLevel.addItem(str(i))
 
             if str(self.cbBTTestMode.currentText()).find('RX') >= 0:
+                self.leItaddr.setEnabled(True)
+                self.leUlap.setEnabled(True)
+                self.cbBTPowerLevel.setEnabled(False)
+                self.cbBTChanJmp.setEnabled(False)                
                 if self.cbBTDataRate.count() != 6:
                     self.cbBTDataRate.clear()
                     for it in sorted(self.cmdParams.BTDataRateType.items(), key=lambda item:item[1]):
                         if it[0].find('prbs9') >= 0 and it[0].find('DH5') < 0:
                             self.cbBTDataRate.addItem(it[0])
+                
             elif self.cbBTDataRate.count() != 27:
                 self.cbBTDataRate.clear()
                 for it in sorted(self.cmdParams.BTDataRateType.items(), key=lambda item:item[1]):
                     self.cbBTDataRate.addItem(it[0])
                 
         elif str(self.cbBTTestMode.currentText()).find('BLE') >= 0:
+            self.cbBTChanJmp.setEnabled(False) 
             self.cbBTChannel.clear()
             for i in range(11):
                 self.cbBTChannel.addItem(str(i)+'/'+str(2404+i*2))
@@ -512,14 +540,17 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             self.cbBTChannel.addItem(str(39)+'/2480')
             self.leBTPayload.setEnabled(False)
             self.cbBTSyncw.setEnabled(True)
+            self.leSyncw.setEnabled(True)
             self.cbBTPowerLevel.clear()
             for i in range(9):
                 self.cbBTPowerLevel.addItem(str(i))
 
             if str(self.cbBTTestMode.currentText()).find('RX') >= 0:
+                self.cbBTPowerLevel.setEnabled(False)
                 if self.cbBTDataRate.count() != 1:
                     self.cbBTDataRate.clear()
                     self.cbBTDataRate.addItem('LE_prbs9')
+                    
             elif self.cbBTDataRate.count() != 3:
                 self.cbBTDataRate.clear()
                 for it in sorted(self.cmdParams.BLEDataRateType.items(), key=lambda item:item[1]):
@@ -527,8 +558,12 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
 
         if str(self.cbBTTestMode.currentText()).find('tone') >= 0:
             self.lbBTPowerLevel.setText('Backoff:')
-        else:
-            self.lbBTPowerLevel.setText('Power Level:')
+            self.cbBTChanJmp.setEnabled(False)
+            self.cbBTDataRate.setEnabled(False)            
+            
+        if str(self.cbBTTestMode.currentText()).find('BT RX') >= 0:
+            self.cbBTItaddr.setEnabled(True)
+            self.cbBTUlap.setEnabled(True)
 
             
     def btSyncw(self):
@@ -542,10 +577,16 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             self.leCOM.setHidden(False)
         else:
             self.leCOM.setHidden(True)
+        try:
+            if self._ser.is_open:
+                self._ser.baudrate = int(self.cbComBaud.currentText())
+        except:
+            pass
     
     def wfCmdSend(self):            
         cmd = ''        
-        channel = int(self.cbWFChannel.currentIndex()) + 1
+        channel = str(self.cbWFChannel.currentText())
+        channel = int(channel[:channel.find('/')])
         rate = self.cmdParams.WFDataRate[str(self.cbWFDataRate.currentText())]
         try:
             attenuation = int(str(self.leWFAtten.text()))
@@ -556,10 +597,11 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             self.printLog('attenuation is error(value)')
             return
         
-        if str(self.cbWFBandWidth.currentText()).find('40M') >= 0:
-            self.cmdSend('tx_cbw40m_en 1\r')
-        else:
-            self.cmdSend('tx_cbw40m_en 0\r')
+        if str(self.cbChipType.currentText()).find('ESP32') >= 0:
+            if str(self.cbWFBandWidth.currentText()).find('40M') >= 0:
+                self.cmdSend('tx_cbw40m_en 1\r')
+            else:
+                self.cmdSend('tx_cbw40m_en 0\r')
         
         if str(self.cbWFTestMode.currentText()).find('TX continues') >= 0:
             self.cmdSend('tx_contin_en 1\r')
@@ -578,6 +620,12 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
         if not cmd.endswith('\r'):
             cmd = cmd+'\r'
         self.cmdSend(cmd)
+        
+        self.cbBTTestMode.setEnabled(False)
+        self.cbWFTestMode.setEnabled(False)
+        self.pbBTSend.setEnabled(False)
+        self.pbWFSend.setEnabled(False)   
+        self.pbBTStop.setEnabled(False)
     
     def btCmdSend(self):
         cmd = ''
@@ -585,14 +633,23 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
         chanJump = str(self.cbBTChanJmp.currentIndex())
         channel = self.cbBTChannel.currentIndex()
         dataRateType = ''
+      
         if str(self.cbBTTestMode.currentText()).find('BT') >= 0:
             dataRateType = self.cmdParams.BTDataRateType[str(self.cbBTDataRate.currentText())]
         else:
             dataRateType = self.cmdParams.BLEDataRateType[str(self.cbBTDataRate.currentText())]
+        itaddr = str(self.cbBTItaddr.currentText())
+        if itaddr.find('custom') >= 0:
+            itaddr = str(self.leItaddr.text())
+            
+        ulap = str(self.cbBTUlap.currentText())
+        if ulap.find('custom') >= 0:
+            ulap = str(self.leUlap.text())
+        
         syncw = str(self.cbBTSyncw.currentText())
         if syncw.find('custom') >= 0:
             syncw = str(self.leSyncw.text())
-            
+        
         try:
             payloadLength = int(str(self.leBTPayload.text()))
         except:
@@ -602,33 +659,38 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             self.printLog('payloadLength is error(value)')
             return
         
-        if str(self.cbBTTestMode.currentText()).find('BT TX') >= 0:
+        if str(self.cbBTTestMode.currentText()) == 'BT TX':
             cmd = 'fcc_bt_tx '+powerLevel+' '+chanJump+' '+str(channel)+' '+dataRateType+'\r'
         elif str(self.cbBTTestMode.currentText()).find('BT RX') >= 0 and self.cbBTDataRate.currentIndex() <= 1:
             if channel % 2 == 0:
                 channel = channel / 2
             else:
                 channel = (channel-1)/2 + 40
-            cmd = 'rw_rx_per 0 '+str(channel)+' '+hex(self._ulap)+' '+str(self._ltaddr)
+            cmd = 'rw_rx_per 0 '+str(channel)+' '+ulap+' '+itaddr
         elif str(self.cbBTTestMode.currentText()).find('BT RX') >= 0 and self.cbBTDataRate.currentIndex() > 1:
             if channel % 2 == 0:
                 channel = channel / 2
             else:
                 channel = (channel-1)/2 + 40
-            cmd = 'rw_rx_per 1 '+str(channel)+' '+hex(self._ulap)+' '+str(self._ltaddr)
+            cmd = 'rw_rx_per 1 '+str(channel)+' '+ulap+' '+itaddr
         elif str(self.cbBTTestMode.currentText()).find('BLE TX') >= 0 and syncw=='0x0':
             cmd = 'fcc_le_tx '+powerLevel+' '+str(channel)+' '+str(payloadLength)+' '+dataRateType+'\r'
         elif str(self.cbBTTestMode.currentText()).find('BLE TX') >= 0 and syncw!='0x0':
-            cmd = 'fcc_le_tx '+powerLevel+' '+str(channel)+' '+str(payloadLength)+' '+dataRateType+' '+syncw+'\r'
+            cmd = 'fcc_le_tx_syncw '+powerLevel+' '+str(channel)+' '+str(payloadLength)+' '+dataRateType+' '+syncw+'\r'
         elif str(self.cbBTTestMode.currentText()).find('BLE RX') >= 0:
             cmd = 'rw_le_rx_per '+str(channel)+' '+syncw
-        elif str(self.cbBTTestMode.currentText()).find('BT TX tone') >= 0:
+        elif str(self.cbBTTestMode.currentText()) == 'BT TX tone':
             cmd = 'bt_tx_tone 1 '+str(channel)+' '+powerLevel
             
         if not cmd.endswith('\r'):
             cmd = cmd+'\r'
         self.cmdSend(cmd)
         
+        self.cbBTTestMode.setEnabled(False)
+        self.cbWFTestMode.setEnabled(False)
+        self.pbBTSend.setEnabled(False)
+        self.pbWFSend.setEnabled(False)
+        self.pbWFStop.setEnabled(False)
 
     def cmdStop(self):
         if self.twTestPanel.currentIndex() == 0 and str(self.cbWFTestMode.currentText()).find('tone') >= 0:
@@ -645,8 +707,8 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             self.cmdSend(cmd)
 
         elif self.twTestPanel.currentIndex() == 0 and str(self.cbWFTestMode.currentText()).find('continue') >= 0:
-            self.cmdSend('tx_contin_en 0\r')
             self.cmdSend('cmdstop\r')
+            self.cmdSend('tx_contin_en 0\r')
             
         elif self.twTestPanel.currentIndex() == 1 and str(self.cbBTTestMode.currentText()).find('tone') >= 0:
             powerLevel = str(self.cbBTPowerLevel.currentText())
@@ -655,6 +717,13 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             self.cmdSend(cmd)
         else:
             self.cmdSend('cmdstop\r')
+            
+        self.cbBTTestMode.setEnabled(True)
+        self.cbWFTestMode.setEnabled(True)
+        self.pbBTSend.setEnabled(True)
+        self.pbWFSend.setEnabled(True)
+        self.pbBTStop.setEnabled(True)
+        self.pbWFStop.setEnabled(True)
     
     def loadSave(self, configParams):
         if configParams.has_key('manual_cmd'):
@@ -670,8 +739,7 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             fd.write('Test_Type = '+str(int(self._TestType)) + ' # 0:cmd hander with wifi, 1:use cmd hander with esp')
             fd.write('\n[manual_cmd]\n')
             for le in self.leSend_group:
-                fd.write(str(le) + '=' + self.leSend_group[le].text() + '\n')            
-            
+                fd.write(str(le) + '=' + self.leSend_group[le].text() + '\n')
 
     ''' signal event handler '''
     def onClose(self):
@@ -721,7 +789,10 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
                 self.leCycleInter.setEnabled(True)
     
     def loadBin(self):
-        self._ser.close()
+        try:
+            self._ser.close()
+        except:
+            pass
         esp_params = esp_param()        
         esp_params.chip_type = str(self.cbChipType.currentText())
         esp_params.filename = str(self.leFilePath.text())
@@ -730,7 +801,16 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
         if esp_params.filename.endswith('.bin') != True:
             self.printLog('choose file not a bin file')
             return
-        esp_params.addr_filename = {(0x0, open(esp_params.filename,'rb'))}
+        if esp_params.chip_type.find('ESP32') >= 0:
+            esp_params.addr_filename = {(0x1000, open(esp_params.filename,'rb'))}
+            esp_params.flash_freq = '40m'
+            esp_params.flash_mode = 'dio'
+            esp_params.flash_size = '4MB'
+        elif esp_params.chip_type.find('ESP8266') >= 0:
+            esp_params.addr_filename = {(0x0, open(esp_params.filename,'rb'))}
+            esp_params.flash_freq = '26m'
+            esp_params.flash_mode = 'qio'
+            esp_params.flash_size = '2MB'            
         if str(self.cbLoadType.currentText()).find('RAM') >= 0:
             esp_params.esp_download_mode = 1
         elif str(self.cbLoadType.currentText()).find('Flash') >= 0:
@@ -741,7 +821,6 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
         
         t1 = threading.Thread(target=t_loadBin, args=[self, esp_params])
         t1.start()
-        self._ser.close()
         
     def _startRFTest(self):
         icon = QtGui.QIcon()
@@ -758,7 +837,6 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
             self.leCycleInter.setEnabled(True)
             self._port_state = 0
             return
-        
     
         self.pbOpenSerial.setAutoFillBackground(True)
         p=self.pbOpenSerial.palette()
@@ -799,7 +877,10 @@ class Ui_EspRFTool(espRFToolUIEN.Ui_EspRFtestTool, QtGui.QWidget):
     
     def prbUpdate(self, persent):
         self.prbLoad.setValue(persent)
-        if persent == 100:
+        try:
+            if persent == 100 and (not self._ser.is_open):
+                self._startRFTest()
+        except:
             self._startRFTest()
         
     def cbUpdate(self):
